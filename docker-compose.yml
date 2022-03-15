@@ -7,23 +7,36 @@ services:
     # ports:
     #   - "5432:5432"
     env_file:
-      - ./postgres.env
+      - ./consumer/postgres.env
     networks:
       - reach-ids-example
     # volumes:
     #   - connector-data:/var/lib/postgresql/data
 
-  connector:
+  consumer:
     image: ghcr.io/international-data-spaces-association/dataspace-connector
     container_name: 'consumer-connector'
     # ports:
     #   - 8080:8080
     env_file:
-      - ./connector.env
+      - ./consumer/connector.env
     networks:
       - reach-ids-example
     depends_on:
       - postgres
+
+  proxy:
+    image: nginx:1.20
+    container_name: 'proxy'
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - reach-ids-example
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - consumer
 
 networks:
   reach-ids-example:
