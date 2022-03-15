@@ -1,0 +1,33 @@
+version: '3.5'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: 'consumer-postgres'
+    # ports:
+    #   - "5432:5432"
+    env_file:
+      - ./postgres.env
+    networks:
+      - reach-ids-example
+    # volumes:
+    #   - connector-data:/var/lib/postgresql/data
+
+  connector:
+    build:
+      context: .
+    container_name: 'consumer-connector'
+    # ports:
+    #   - 8080:8080
+    env_file:
+      - ./connector.env
+    networks:
+      - reach-ids-example
+    depends_on:
+      - postgres
+
+networks:
+  reach-ids-example:
+
+# volumes:
+#   connector-data: {}
