@@ -1,7 +1,7 @@
 version: '3.5'
 
 services:
-  postgres:
+  consumer-postgres:
     image: postgres:13
     container_name: 'consumer-postgres'
     # ports:
@@ -23,7 +23,31 @@ services:
     networks:
       - reach-ids-example
     depends_on:
-      - postgres
+      - consumer-postgres
+
+  provider-postgres:
+    image: postgres:13
+    container_name: 'provider-postgres'
+    # ports:
+    #   - "5432:5432"
+    env_file:
+      - ./provider/postgres.env
+    networks:
+      - reach-ids-example
+    # volumes:
+    #   - connector-data:/var/lib/postgresql/data
+
+  provider:
+    image: ghcr.io/international-data-spaces-association/dataspace-connector
+    container_name: 'provider-connector'
+    # ports:
+    #   - 8080:8080
+    env_file:
+      - ./provider/connector.env
+    networks:
+      - reach-ids-example
+    depends_on:
+      - provider-postgres
 
   proxy:
     image: nginx:1.20
@@ -37,6 +61,7 @@ services:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - consumer
+      - provider
 
 networks:
   reach-ids-example:
