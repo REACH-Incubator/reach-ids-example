@@ -14,8 +14,7 @@ services:
     #   - connector-data:/var/lib/postgresql/data
 
   connector:
-    build:
-      context: .
+    image: ghcr.io/international-data-spaces-association/dataspace-connector
     container_name: 'consumer-connector'
     # ports:
     #   - 8080:8080
