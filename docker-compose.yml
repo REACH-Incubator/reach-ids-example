@@ -59,6 +59,8 @@ services:
       - reach-ids-example
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./consumer/certs/:/certs/consumer/
+      - ./provider/certs/:/certs/provider/
     depends_on:
       - consumer
       - provider
